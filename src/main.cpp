@@ -49,7 +49,7 @@ int main()
                                  "4 - Delete a politician\n"
                                  "5 - Search options\n"
                                  "6 - Exit\n\n"
-                                 "Choose a option [1-6]: ";
+                                 "Choose an option [1-6]: ";
     unsigned short opt;
     while((opt = menu(main_str)) != 6)
     {
