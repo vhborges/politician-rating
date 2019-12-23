@@ -1,4 +1,8 @@
+# Editor settings
+.ccls*
 .vscode/
+
+# Project folders
 build/
 db/
 obj/
