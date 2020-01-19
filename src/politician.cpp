@@ -1,87 +1,53 @@
-//standard libraries
-#include <limits>
+// Local headers
+#include <politician.hpp>
 
-//local headers
-#include <politician.h>
+using std::string;
+using std::move;
 
-void politician_core::get_data()
+politician_core::politician_core(string name, string party)
+	: name(move(name)), party(move(party))
+{}
+
+politician_update::politician_update(string name, string party, string new_party)
+	: politician_core(move(name), move(party)), new_party(move(new_party))
+{}
+
+politician::politician(string name, string party, string info, const short points)
+	: politician_core(move(name), move(party)), info(move(info)), points(points)
+{}
+
+rating::rating(
+		string name, string party, string description, const short points,
+		string date_time)
+	: politician_core(move(name), move(party)),
+		description(move(description)), points(points), date_time(move(date_time))
+{}
+
+void politician_core::print_data() const
 {
-  std::cout << "Politician's name: ";
-  std::getline(std::cin, name);
-  if(name == "")
-    throw "Politicians's name cannot be empty.";
-
-  std::cout << "Politician's party: ";
-  std::getline(std::cin, party);
-  if(party == "")
-    throw "Politician's party cannot be empty.";
+	std::cout << "Name: " << name << "\n"
+	             "Party: " << party << "\n";
 }
 
-void politician::get_data()
+void politician_update::print_data() const
 {
-  politician_core::get_data();
-
-  std::cout << "General information (optional - press enter to ignore):\n\t";
-  std::getline(std::cin, info);
+	politician_core::print_data();
+	std::cout << "New party: " << new_party << "\n";
 }
 
-void politician_update::get_data()
+void politician::print_data() const
 {
-  std::cout << "Name: ";
-  std::getline(std::cin, name);
-  if(name == "")
-    throw "Politicians's name cannot be empty.";
-
-  std::cout << "Old party: ";
-  std::getline(std::cin, party);
-  if(party == "")
-    throw "Politician's party cannot be empty.";
-
-  std::cout << "New party: ";
-  std::getline(std::cin, new_party);
-  if(party == "")
-    throw "Politician's party cannot be empty.";
+	politician_core::print_data();
+	std::cout << "Rating points: " << points << "\n"
+	             "Information: " << info << "\n";
 }
 
-confirm politician_core::confirm_data(const std::string& operation)
+void rating::print_data() const
 {
-  std::string confirm;
-  std::cout << "\nConfirm " << operation << "? [y]es/[n]o/[c]ancel ";
-  std::getline(std::cin, confirm);
-
-  if(confirm == "y" || confirm == "Y")
-    return yes;
-  else if(confirm == "n" || confirm == "N")
-    return no;
-  else if(confirm == "c" || confirm == "C")
-    return cancel;
-  else
-    throw "Invalid option.";
-}
-
-void rating::get_data()
-{
-  politician_core::get_data();
-
-  bool valid;
-  do
-  {
-    valid = true;
-    std::cout << "Points to add/subtract [-5 to 5]: ";
-    std::cin >> points;
-    if(std::cin.fail())
-    {
-      std::cout << "--> Invalid entry. Type only a number!\n";
-      valid = false;
-      std::cin.clear();
-    }
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  }
-  while(!valid);
-  if(points < -5 || points > 5)
-    throw "Points must be between -5 and 5 (included).";
-  
-  std::cout << "Description or reason for this rate (optional - press enter to ignore):\n\t";
-  std::getline(std::cin, description);
+	politician_core::print_data();
+	std::cout << "Points: " << points << "\n";
+	if(date_time.empty() == false)
+		std::cout << "Date/time: " << date_time << "\n";
+	std::cout << "Description: " << description << "\n";
 }
 

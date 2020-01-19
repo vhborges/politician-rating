@@ -1,43 +1,55 @@
-compiler = g++
-flags = -Wall -Wextra -Wpedantic -Werror -O2
-libs = sqlite3
+compiler := g++
+flags := -Wall -Wextra -Wpedantic -Wconversion
+libs := -lsqlite3 -lboost_locale
 
-build_dir = build
-debug_dir = debug
-source_dir = src
-object_dir = obj
-include_dir = include
+include_dir := include
+build_dir := build
+debug_dir := debug
+source_dir := src
+object_dir := obj
+build_obj_dir := $(build_dir)/$(object_dir)
+debug_obj_dir := $(debug_dir)/$(object_dir)
 
-_objects = main.o politician.o data_base.o exceptions.o system.o
-objects = $(patsubst %, $(object_dir)/%, $(_objects))
+objects := main.o politician.o data_base.o exceptions.o input.o
+build_objects := $(patsubst %, $(build_obj_dir)/%, $(objects))
+debug_objects := $(patsubst %, $(debug_obj_dir)/%, $(objects))
 
-_dependencies = data_base.h exceptions.h politician.h system.h
-dependencies = $(patsubst %, $(include_dir)/%, $(_dependencies))
+dependencies := data_base.hpp exceptions.hpp politician.hpp input.hpp CLI11.hpp
+dependencies := $(patsubst %, $(include_dir)/%, $(dependencies))
 
-executable = politician
+executable := politician
 
-.SECONDARY: $(objects)
-
+####### BUILD rules #######
 .PHONY: all
-all: $(build_dir)/$(executable) | $(build_dir)
+all: flags += -O2 -march=native
+all: $(build_dir)/$(executable) | $(build_dir)/
 
-.PHONY: run
-run: all
-	./$(build_dir)/$(executable)
+$(build_dir)/$(executable): $(build_objects)
+	$(compiler) $(flags) $(libs) $^ -o $@
 
+$(build_obj_dir)/%.o: $(source_dir)/%.cpp $(dependencies) | $(build_obj_dir)/
+	$(compiler) $(flags) -I $(include_dir) -c $< -o $@
+###########################
+
+####### DEBUG rules #######
 .PHONY: debug
 debug: flags += -g
 debug: $(debug_dir)/$(executable) | $(debug_dir)/
 
-%/$(executable): $(objects)
-	$(compiler) $(flags) -l $(libs) $^ -o $@
+$(debug_dir)/$(executable): $(debug_objects)
+	$(compiler) $(flags) $(libs) $^ -o $@
 
-$(object_dir)/%.o: $(source_dir)/%.cpp $(dependencies) | $(object_dir)/
+$(debug_obj_dir)/%.o: $(source_dir)/%.cpp $(dependencies) | $(debug_obj_dir)/
 	$(compiler) $(flags) -I $(include_dir) -c $< -o $@
+###########################
 
-%/: 
+%/:
 	mkdir -p $@
 
 .PHONY: clean
 clean:
-	rm $(object_dir)/*.o
+	rm -f $(build_objects) $(debug_objects)
+
+.PHONY: clean-all
+clean-all:
+	rm -f $(build_objects) $(debug_objects) $(build_dir)/$(executable) $(debug_dir)/$(executable)
