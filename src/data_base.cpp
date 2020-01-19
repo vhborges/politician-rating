@@ -34,13 +34,13 @@ void init_db(sqlite3** db)
 				"Function: 'init_db'. Return code: " + std::to_string(ret));
 
 	ret = sqlite3_extended_result_codes(*db, 1);
-	check_return<db_exception>(ret, SQLITE_OK, "Extend result codes", "init_db", NULL);
+	check_return<db_exception>(ret, SQLITE_OK, "Extend result codes", "init_db", nullptr);
 }
 
 void create_tables(sqlite3* db)
 {
 	char* errmsg;
-	int ret = sqlite3_exec(db, sql_strings::create_tables, NULL, NULL, &errmsg);
+	int ret = sqlite3_exec(db, sql_strings::create_tables, nullptr, nullptr, &errmsg);
 	check_return<db_exception>(ret, SQLITE_OK, "Execute", "create_tables", errmsg);
 	sqlite3_free(errmsg);
 }
@@ -51,7 +51,7 @@ int insert_to_politician(sqlite3* db, const politician& p)
 
 	try
 	{
-		int ret = sqlite3_prepare_v2(db, sql_strings::insert_to_politician, -1, &ppStmt, NULL);
+		int ret = sqlite3_prepare_v2(db, sql_strings::insert_to_politician, -1, &ppStmt, nullptr);
 		check_return<db_exception>(
 				ret, SQLITE_OK, "Prepare", "insert_to_politician", sqlite3_errmsg(db));
 
@@ -89,7 +89,7 @@ int insert_to_ratings(sqlite3* db, const rating& r)
 
 	try
 	{
-		int ret = sqlite3_prepare_v2(db, sql_strings::insert_to_ratings, -1, &ppStmt, NULL);
+		int ret = sqlite3_prepare_v2(db, sql_strings::insert_to_ratings, -1, &ppStmt, nullptr);
 		check_return<db_exception>(
 				ret, SQLITE_OK, "Prepare", "insert_to_ratings", sqlite3_errmsg(db));
 
@@ -130,7 +130,7 @@ int update_party(sqlite3* db, const politician_update& p)
 	sqlite3_stmt* ppStmt;
 	try
 	{
-		int ret = sqlite3_prepare_v2(db, sql_strings::update_party, -1, &ppStmt, NULL);
+		int ret = sqlite3_prepare_v2(db, sql_strings::update_party, -1, &ppStmt, nullptr);
 		check_return<db_exception>(
 				ret, SQLITE_OK, "Prepare", "update_party", sqlite3_errmsg(db));
 
@@ -167,7 +167,7 @@ int delete_politician(sqlite3* db, const politician_core& p)
 	sqlite3_stmt* ppStmt;
 	try
 	{
-		int ret = sqlite3_prepare_v2(db, sql_strings::delete_politician, -1, &ppStmt, NULL);
+		int ret = sqlite3_prepare_v2(db, sql_strings::delete_politician, -1, &ppStmt, nullptr);
 		check_return<db_exception>(
 				ret, SQLITE_OK, "Prepare", "delete_politician", sqlite3_errmsg(db));
 
@@ -204,7 +204,7 @@ const vector<politician> get_politician_by_name(sqlite3* db, const string& name)
 
 	try
 	{
-		int ret = sqlite3_prepare_v2(db, sql_strings::search_by_name, -1, &ppStmt, NULL);
+		int ret = sqlite3_prepare_v2(db, sql_strings::search_by_name, -1, &ppStmt, nullptr);
 		check_return<db_exception>(
 				ret, SQLITE_OK, "Prepare", "get_politician_by_name", sqlite3_errmsg(db));
 
@@ -244,7 +244,7 @@ const vector<politician> get_politicians_by_party(sqlite3* db, const string& par
 
 	try
 	{
-		int ret = sqlite3_prepare_v2(db, sql_strings::search_by_party, -1, &ppStmt, NULL);
+		int ret = sqlite3_prepare_v2(db, sql_strings::search_by_party, -1, &ppStmt, nullptr);
 		check_return<db_exception>(
 				ret, SQLITE_OK, "Prepare", "get_politicians_by_party", sqlite3_errmsg(db));
 
@@ -284,7 +284,7 @@ const vector<rating> get_politician_ratings(sqlite3* db, const politician_core& 
 
 	try
 	{
-		int ret = sqlite3_prepare_v2(db, sql_strings::show_ratings, -1, &ppStmt, NULL);
+		int ret = sqlite3_prepare_v2(db, sql_strings::show_ratings, -1, &ppStmt, nullptr);
 		check_return<db_exception>(
 				ret, SQLITE_OK, "Prepare", "get_politician_ratings", sqlite3_errmsg(db));
 
@@ -337,7 +337,7 @@ const vector<politician> get_all_politicians(sqlite3* db, const string& order)
 
 	try
 	{
-		int ret = sqlite3_prepare_v2(db, sql_query, -1, &ppStmt, NULL);
+		int ret = sqlite3_prepare_v2(db, sql_query, -1, &ppStmt, nullptr);
 		check_return<db_exception>(
 				ret, SQLITE_OK, "Prepare", "get_all_politicians", sqlite3_errmsg(db));
 
@@ -381,7 +381,7 @@ const vector<politician_core> get_politicians_compact(sqlite3* db, const string&
 
 	try
 	{
-		int ret = sqlite3_prepare_v2(db, sql_query, -1, &ppStmt, NULL);
+		int ret = sqlite3_prepare_v2(db, sql_query, -1, &ppStmt, nullptr);
 		check_return<db_exception>(
 				ret, SQLITE_OK, "Prepare", "get_politicians_compact", sqlite3_errmsg(db));
 

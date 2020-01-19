@@ -26,7 +26,7 @@ string db_exception::generate_string(
 {
 	stringstream msg;
 	msg << operation << " error in function '" << function << "'. Return code: " << return_code;
-	if(errmsg != NULL)
+	if(errmsg != nullptr)
 		msg << "\nDescription: " << errmsg;
 	return msg.str();
 }
