@@ -77,13 +77,13 @@ int delete_politician(sqlite3* db, const politician_core& p);
  * Retrives all politician which matches the 'name'.
  * @return a vector of all politicians retrieved.
  */
-const vector<politician> get_politician_by_name(sqlite3* db, string name);
+const vector<politician> get_politician_by_name(sqlite3* db, const string& name);
 
 /**
  * Retrives all politicians belonging to a party.
  * @return a vector of all politicians belonging to party.
  */
-const vector<politician> get_politicians_by_party(sqlite3* db, string party);
+const vector<politician> get_politicians_by_party(sqlite3* db, const string& party);
 
 /**
  * Retrives all the ratings belonging to a politician.

@@ -196,7 +196,7 @@ int delete_politician(sqlite3* db, const politician_core& p)
 	return sqlite3_changes(db);
 }
 
-const vector<politician> get_politician_by_name(sqlite3* db, string name)
+const vector<politician> get_politician_by_name(sqlite3* db, const string& name)
 {
 	sqlite3_stmt* ppStmt;
 
@@ -236,7 +236,7 @@ const vector<politician> get_politician_by_name(sqlite3* db, string name)
 	return vec;
 }
 
-const vector<politician> get_politicians_by_party(sqlite3* db, string party)
+const vector<politician> get_politicians_by_party(sqlite3* db, const string& party)
 {
 	sqlite3_stmt* ppStmt;
 
