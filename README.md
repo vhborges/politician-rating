@@ -26,37 +26,36 @@ Show all subcommands and options of a particular subcommand:
 ```
 politician <subcommand> --help
 ```
-Note: Arguments may accept texts with spaces, but they must be embraced by quotation marks.
+Note: Arguments may accept texts with spaces, but they must be embraced by quotation marks.<br>
 During execution the **database file** will be created inside `$HOME/.local/share/politician/`. All unexisting folders will be created.
-<br>
-**Usage examples:**
+### Usage examples
 Insert a new politician:
 ```
 politician register -n <name> [-p <party>] [-i <information>]
 ```
-Note: a politician without party is allowed (the party will be registered as "none"), but all politicians are univocally identified by the combination (Name + Party), this means that two politicians with the same name and without party are **not** allowed.
-<br>
+**Note**: a politician without party is allowed (the party will be registered as "none"), but all politicians are univocally identified by the combination (Name + Party), this means that two politicians with the same name and without party are **not** allowed.
+<br><br>
 Insert a new rate to existing politician:
 ```
 politician rate -n <name> [-p <party>] -r <rating points> [-d <rating description>]
 ```
-Note: the rating points must be in the range [-5, 5].
-<br>
+**Note**: the rating points must be in the range [-5, 5].
+<br><br>
 Show all ratings belonging to a politician:
 ```
 politician search ratings -n <name> [-p <party>]
 ```
-Show all politicians ordered by highest to lowest rating:
+<br>Show all politicians ordered by highest to lowest rating:
 ```
 politician search all [-r] [-f]
 ```
-Note: the flag `-r` inverts the order the politicians are shown by their rating points, and the flag `-f` shows the full version incluing information and rating points.
-<br>
+**Note**: the flag `-r` inverts the order the politicians are shown by their rating points, and the flag `-f` shows the full version incluing information and rating points.
+<br><br>
 Search politicians by name:
 ```
 politician search name <name>
 ```
-Search all politicians belonging to a party:
+<br>Search all politicians belonging to a party:
 ```
 politician search party <party>
 ```
