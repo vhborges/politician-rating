@@ -26,8 +26,8 @@ Show all subcommands and options of a particular subcommand:
 ```
 politician <subcommand> --help
 ```
-Note: Arguments may accept texts with spaces, but they must be embraced by quotation marks.<br>
-During execution the **database file** will be created inside `$HOME/.local/share/politician/`. All unexisting folders will be created.
+**Note**: Arguments may accept texts with spaces, but they must be embraced by quotation marks.
+<br><br>During execution the **database file** will be created inside `$HOME/.local/share/politician/`. All unexisting folders will be created.
 ### Usage examples
 Insert a new politician:
 ```
