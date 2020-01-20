@@ -14,7 +14,7 @@ using std::string;
 using std::vector;
 
 // Path of the data base file
-extern const string DB_PATH;
+extern const string DB_FILE;
 
 namespace sql_strings
 {

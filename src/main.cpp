@@ -31,14 +31,14 @@ int main(int argc, char** argv)
 	{
 		std::cerr << "Database error: " << e.what() << "\n";
 		if(sqlite3_close(db) != SQLITE_OK)
-			std::cerr << "Database error: could not close the data-base file\n";
+			std::cerr << "Database error: could not close the database file\n";
 		return EXIT_FAILURE;
 	}
 	catch(const std::domain_error& e)
 	{
 		std::cerr << "Domain error: " << e.what() << "\n";
 		if(sqlite3_close(db) != SQLITE_OK)
-			std::cerr << "Database error: could not close the data-base file\n";
+			std::cerr << "Database error: could not close the database file\n";
 		return EXIT_FAILURE;
 	}
 	catch(const std::runtime_error& e)

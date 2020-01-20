@@ -1,5 +1,5 @@
 compiler := g++
-flags := -Wall -Wextra -Wpedantic -Wconversion
+flags := -Wall -Wextra -Wpedantic -Wconversion -std=c++17
 libs := -lsqlite3 -lboost_locale
 
 include_dir := include
@@ -10,11 +10,11 @@ object_dir := obj
 build_obj_dir := $(build_dir)/$(object_dir)
 debug_obj_dir := $(debug_dir)/$(object_dir)
 
-objects := main.o politician.o data_base.o exceptions.o input.o
+objects := main.o politician.o data_base.o exceptions.o input.o filesystem.o
 build_objects := $(patsubst %, $(build_obj_dir)/%, $(objects))
 debug_objects := $(patsubst %, $(debug_obj_dir)/%, $(objects))
 
-dependencies := data_base.hpp exceptions.hpp politician.hpp input.hpp CLI11.hpp
+dependencies := data_base.hpp exceptions.hpp politician.hpp input.hpp CLI11.hpp filesystem.hpp
 dependencies := $(patsubst %, $(include_dir)/%, $(dependencies))
 
 executable := politician

@@ -4,6 +4,7 @@
 // Local headers
 #include <data_base.hpp>
 #include <exceptions.hpp>
+#include <filesystem.hpp>
 
 using std::string;
 using std::move;
@@ -25,7 +26,10 @@ inline void check_return(
 
 void init_db(sqlite3** db)
 {
-	int ret = sqlite3_open(DB_PATH.c_str(), db);
+	string db_path = check_create_dirs();
+	db_path += DB_FILE;
+
+	int ret = sqlite3_open(db_path.c_str(), db);
 	if(ret != SQLITE_OK)
 		// Not using the check_return function because a db_exception would trigger
 		// the main function to close the database file
@@ -407,11 +411,8 @@ const vector<politician_core> get_politicians_compact(sqlite3* db, const string&
 	return vec;
 }
 
-// Where the database file will be located
-const string DB_FILE = "data.db";
-//const string HOME_DIR = std::getenv("HOME");
-//const string DB_PATH = HOME_DIR + "/.local/share/politician/" + DB_FILE;
-const string DB_PATH = "db/" + DB_FILE;
+// Name of the database file
+const string DB_FILE("data.db");
 
 namespace sql_strings
 {
