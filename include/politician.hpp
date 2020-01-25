@@ -2,10 +2,7 @@
 #define POLITICIAN_HPP
 
 // Standard libraries
-#include <iostream>
-
-// External libraries
-#include <input.hpp>
+#include <string>
 
 using std::string;
 

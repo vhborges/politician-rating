@@ -2,7 +2,8 @@
 #define EXCEPTIONS_HPP
 
 // Standard libraries
-#include <iostream>
+#include <string>
+#include <stdexcept>
 
 using std::string;
 

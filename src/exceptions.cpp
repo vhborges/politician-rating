@@ -1,5 +1,4 @@
 // Standard libraries
-#include <cstring>
 #include <sstream>
 
 // Local headers

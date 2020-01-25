@@ -10,11 +10,11 @@ object_dir := obj
 build_obj_dir := $(build_dir)/$(object_dir)
 debug_obj_dir := $(debug_dir)/$(object_dir)
 
-objects := main.o politician.o data_base.o exceptions.o input.o filesystem.o
+objects := main.o politician.o database.o exceptions.o input.o filesystem.o
 build_objects := $(patsubst %, $(build_obj_dir)/%, $(objects))
 debug_objects := $(patsubst %, $(debug_obj_dir)/%, $(objects))
 
-dependencies := data_base.hpp exceptions.hpp politician.hpp input.hpp CLI11.hpp filesystem.hpp
+dependencies := database.hpp exceptions.hpp politician.hpp input.hpp CLI11.hpp filesystem.hpp
 dependencies := $(patsubst %, $(include_dir)/%, $(dependencies))
 
 executable := politician
@@ -33,7 +33,7 @@ $(build_obj_dir)/%.o: $(source_dir)/%.cpp $(dependencies) | $(build_obj_dir)/
 
 ####### DEBUG rules #######
 .PHONY: debug
-debug: flags += -g
+debug: flags += -Og -g
 debug: $(debug_dir)/$(executable) | $(debug_dir)/
 
 $(debug_dir)/$(executable): $(debug_objects)

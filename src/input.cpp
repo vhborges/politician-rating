@@ -1,7 +1,7 @@
 // Local headers
 #include <input.hpp>
 #include <politician.hpp>
-#include <data_base.hpp>
+#include <database.hpp>
 
 // Command line parser
 #include <CLI11.hpp>
@@ -37,7 +37,7 @@ void replace_newline(string& to_replace)
 	}
 }
 
-int process_input(int argc, char** argv, sqlite3* db)
+int process_input(int argc, char** argv, const database& db)
 {
 	// Use default system locale
 	{
@@ -54,7 +54,7 @@ int process_input(int argc, char** argv, sqlite3* db)
 	reg->add_option("-n,--name", name, "Name of the politician")->required();
 	reg->add_option("-p,--party", party, "Party of the politician");
 	reg->add_option("-i,--info", info, "General information for the politician");
-	reg->callback([&name, &party, &info, db]
+	reg->callback([&name, &party, &info, &db]
 	{
 		replace_newline(info);
 		// Converts name and party to uppercase to make these columns case insensitive
@@ -63,7 +63,7 @@ int process_input(int argc, char** argv, sqlite3* db)
 		p.print_data();
 		if(confirm_operation("insertion"))
 		{
-			if(insert_to_politician(db, p))
+			if(db.insert_to_politician(p))
 				std::cout << "Successfully inserted.\n";
 			else
 				std::cerr << "Insertion failed.\n";
@@ -78,7 +78,7 @@ int process_input(int argc, char** argv, sqlite3* db)
 	rate->add_option("-r,--rate", points,
 			"Rating points to add/subtract [-5 to 5]")->required();
 	rate->add_option("-d,--description", desc, "Description or reason for the rate");
-	rate->callback([&name, &party, &desc, &points, db]
+	rate->callback([&name, &party, &desc, &points, &db]
 	{
 		replace_newline(desc);
 		// Converts name and party to uppercase to make these columns case insensitive
@@ -87,7 +87,7 @@ int process_input(int argc, char** argv, sqlite3* db)
 		r.print_data();
 		if(confirm_operation("rating"))
 		{
-			if(insert_to_ratings(db, r))
+			if(db.insert_to_ratings(r))
 				std::cout << "Successfully inserted.\n";
 			else
 				std::cerr << "Insertion failed.\n";
@@ -99,7 +99,7 @@ int process_input(int argc, char** argv, sqlite3* db)
 	update->add_option("-n,--name", name, "Name of the politician")->required();
 	update->add_option("-o,--old-party", party, "Old party");
 	update->add_option("-p,--new-party", new_party, "New party");
-	update->callback([&name, &party, &new_party, db]
+	update->callback([&name, &party, &new_party, &db]
 	{
 		// Converts name, party and new_party to uppercase to make these columns case
 		// insensitive on every SQL query/operation
@@ -107,7 +107,7 @@ int process_input(int argc, char** argv, sqlite3* db)
 		p.print_data();
 		if(confirm_operation("update"))
 		{
-			if(update_party(db, p))
+			if(db.update_party(p))
 				std::cout << "Successfully updated.\n";
 			else
 				std::cerr << "Update failed. The politician was not found.\n";
@@ -117,7 +117,7 @@ int process_input(int argc, char** argv, sqlite3* db)
 	auto del = app.add_subcommand("delete", "Delete a politician of the database");
 	del->add_option("-n,--name", name, "Name of the politician")->required();
 	del->add_option("-p,--party", party, "Party of the politician");
-	del->callback([&name, &party, db]
+	del->callback([&name, &party, &db]
 	{
 		// Converts name and party to uppercase to make these columns case insensitive
 		// on every SQL query/operation
@@ -125,7 +125,7 @@ int process_input(int argc, char** argv, sqlite3* db)
 		p.print_data();
 		if(confirm_operation("deletion"))
 		{
-			if(delete_politician(db, p))
+			if(db.delete_politician(p))
 				std::cout << "Successfully deleted.\n";
 			else
 				std::cerr << "Deletion failed. The politician was not found.\n";
@@ -137,9 +137,9 @@ int process_input(int argc, char** argv, sqlite3* db)
 
 	auto search_name = search->add_subcommand("name", "Search a politician by name");
 	search_name->add_option("name", name, "Name of the politician")->required();
-	search_name->callback([&name, db]
+	search_name->callback([&name, &db]
 	{
-		vector<politician> politicians = get_politician_by_name(db, to_upper(name));
+		vector<politician> politicians = db.get_politician_by_name(to_upper(name));
 		for_each(politicians.begin(), politicians.end(), [](const politician& p)
 		{
 			p.print_data();
@@ -151,9 +151,9 @@ int process_input(int argc, char** argv, sqlite3* db)
 	auto search_party = search->add_subcommand("party",
 			"Show all politicians belonging to a party");
 	search_party->add_option("party", party, "Party to be searched")->required();
-	search_party->callback([&party, db]
+	search_party->callback([&party, &db]
 	{
-		vector<politician> politicians = get_politicians_by_party(db, to_upper(party));
+		vector<politician> politicians = db.get_politicians_by_party(to_upper(party));
 		for_each(politicians.begin(), politicians.end(), [](const politician& p)
 		{
 			p.print_data();
@@ -166,10 +166,10 @@ int process_input(int argc, char** argv, sqlite3* db)
 			"Show all ratings belonging to a politician");
 	search_ratings->add_option("-n,--name", name, "Name of the politician")->required();
 	search_ratings->add_option("-p,--party", party, "Party of the politician");
-	search_ratings->callback([&name, &party, db]
+	search_ratings->callback([&name, &party, &db]
 	{
-		vector<rating> ratings = get_politician_ratings(
-				db, politician_core(to_upper(name), to_upper(party)));
+		vector<rating> ratings = db.get_politician_ratings(
+				politician_core(to_upper(name), to_upper(party)));
 		for_each(ratings.begin(), ratings.end(), [](const rating& r)
 		{
 			r.print_data();
@@ -184,12 +184,12 @@ int process_input(int argc, char** argv, sqlite3* db)
 	search_all->add_flag("-r,--reverse", _reverse, "Order by lowest to highest rating");
 	search_all->add_flag("-f,--full", full,
 			"Includes the description and rating points of each politician");
-	search_all->callback([&_reverse, &full, db]
+	search_all->callback([&_reverse, &full, &db]
 	{
 		string search_order = _reverse ? "ASC" : "DESC";
 		if(full)
 		{
-			vector<politician> politicians = get_all_politicians(db, search_order);
+			vector<politician> politicians = db.get_all_politicians(search_order);
 			for_each(politicians.begin(), politicians.end(), [](const politician& p)
 			{
 				p.print_data();
@@ -199,7 +199,7 @@ int process_input(int argc, char** argv, sqlite3* db)
 		}
 		else
 		{
-			vector<politician_core> politicians = get_politicians_compact(db, search_order);
+			vector<politician_core> politicians = db.get_politicians_compact(search_order);
 			for_each(politicians.begin(), politicians.end(), [](const politician_core& p)
 			{
 				p.print_data();

@@ -1,3 +1,6 @@
+// Standard libraries
+#include <iostream>
+
 // Local headers
 #include <politician.hpp>
 

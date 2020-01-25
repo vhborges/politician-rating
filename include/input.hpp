@@ -7,6 +7,9 @@
 // External libraries
 #include <sqlite3.h>
 
+// Local headers
+#include <database.hpp>
+
 using std::string;
 
 /**
@@ -19,7 +22,7 @@ bool confirm_operation(const string& operation);
  * Set and process the subcommands, options and flags passed on the command line.
  * @return 0 on success and any other integer on error.
  */
-int process_input(int argc, char** argv, sqlite3* db);
+int process_input(int argc, char** argv, const database& db);
 
 /**
  * Replaces all "\n" of string 'to_replace' with a true newline character.
