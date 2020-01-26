@@ -1,5 +1,5 @@
 # Politician-rating
-A CLI-based application aiming to satisfy a personal need to register, rate and later visualize all the politicians' relevant actions, as to guide my vote decisions. The app currently allows inserting new politicians, add ratings to existing ones (that increase or decrease their rating points), updating/deleting politicians and supports various search options.
+A CLI-based application aiming to satisfy a personal need to register, rate and later visualize all the politicians' relevant actions, as to guide my vote decisions. The app currently allows inserting new politicians, add ratings to existing ones (that increase or decrease their rating points), updating/deleting politicians and also supports various search options.
 ## Build dependencies
 - GNU Make
 - g++ with C++17 support
@@ -27,7 +27,7 @@ Show all subcommands and options of a particular subcommand:
 politician <subcommand> --help
 ```
 **Note**: Arguments may accept texts with spaces, but they must be embraced by quotation marks.
-<br><br>During execution the **database file** will be created inside `$HOME/.local/share/politician/`. All unexisting folders will be created.
+<br><br>During execution the **database file** (and all unexisting parent folders) will be created inside `$HOME/.local/share/politician/`.
 ### Usage examples
 Insert a new politician:
 ```
