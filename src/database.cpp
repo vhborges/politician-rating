@@ -37,15 +37,19 @@ database::database()
 
 	// Extend the sqlite result codes to better report database errors
 	ret = sqlite3_extended_result_codes(connection, 1);
+#ifdef DEBUG
 	check_return<db_exception>(ret, SQLITE_OK, "Extend result codes",
 			"database constructor", sqlite3_errmsg(connection));
+#endif
 
 	// Create the politician and ratings tables if they don't already exists.
 	char* errmsg;
 	ret = sqlite3_exec(connection, sql_strings::create_tables, nullptr,
 			nullptr, &errmsg);
+#ifdef DEBUG
 	check_return<db_exception>(ret, SQLITE_OK, "Create tables",
 			"database constructor", errmsg);
+#endif
 	sqlite3_free(errmsg);
 }
 
@@ -66,16 +70,22 @@ int database::insert_to_politician(const politician& p) const
 	sqlite_stmt_obj stmt(connection, sql_strings::insert_to_politician, function_name);
 
 	int ret = sqlite3_bind_text(stmt.ppStmt, 1, p.name.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind name", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_bind_text(stmt.ppStmt, 2, p.party.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind party", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_bind_text(stmt.ppStmt, 3, p.info.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind info", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_step(stmt.ppStmt);
 	check_return<politician_op_exception>(
@@ -91,20 +101,28 @@ int database::insert_to_ratings(const rating& r) const
 	sqlite_stmt_obj stmt(connection, sql_strings::insert_to_ratings, function_name);
 
 	int ret = sqlite3_bind_text(stmt.ppStmt, 1, r.name.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind name", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_bind_text(stmt.ppStmt, 2, r.party.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind party", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_bind_int(stmt.ppStmt, 3, r.points);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind points", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_bind_text(stmt.ppStmt, 4, r.description.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind description", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_step(stmt.ppStmt);
 	check_return<rating_op_exception>(
@@ -120,16 +138,22 @@ int database::update_party(const politician_update& p) const
 	sqlite_stmt_obj stmt(connection, sql_strings::update_party, function_name);
 
 	int ret = sqlite3_bind_text(stmt.ppStmt, 1, p.new_party.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind new party", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_bind_text(stmt.ppStmt, 2, p.name.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind name", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_bind_text(stmt.ppStmt, 3, p.party.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind party", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_step(stmt.ppStmt);
 	check_return<db_exception>(
@@ -145,12 +169,16 @@ int database::delete_politician(const politician_core& p) const
 	sqlite_stmt_obj stmt(connection, sql_strings::delete_politician, function_name);
 
 	int ret = sqlite3_bind_text(stmt.ppStmt, 1, p.name.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind name", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_bind_text(stmt.ppStmt, 2, p.party.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind party", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_step(stmt.ppStmt);
 	check_return<politician_op_exception>(
@@ -168,8 +196,10 @@ const vector<politician> database::get_politician_by_name(const string& name) co
 	vector<politician> politicians;
 
 	int ret = sqlite3_bind_text(stmt.ppStmt, 1, name.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind name", function_name, sqlite3_errmsg(connection));
+#endif
 
 	while((ret = sqlite3_step(stmt.ppStmt)) == SQLITE_ROW)
 	{
@@ -181,7 +211,7 @@ const vector<politician> database::get_politician_by_name(const string& name) co
 		politicians.emplace_back(move(name), move(party), move(info), rating);
 	}
 	check_return<db_exception>(
-			ret, SQLITE_DONE, "Step", function_name, sqlite3_errmsg(connection));
+			ret, SQLITE_DONE, "Search", function_name, sqlite3_errmsg(connection));
 
 	return politicians;
 }
@@ -195,8 +225,10 @@ const vector<politician> database::get_politicians_by_party(const string& party)
 	vector<politician> politicians;
 
 	int ret = sqlite3_bind_text(stmt.ppStmt, 1, party.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind party", function_name, sqlite3_errmsg(connection));
+#endif
 
 	while((ret = sqlite3_step(stmt.ppStmt)) == SQLITE_ROW)
 	{
@@ -208,7 +240,7 @@ const vector<politician> database::get_politicians_by_party(const string& party)
 		politicians.emplace_back(move(name), move(party), move(info), rating);
 	}
 	check_return<db_exception>(
-			ret, SQLITE_DONE, "Step", function_name, sqlite3_errmsg(connection));
+			ret, SQLITE_DONE, "Search", function_name, sqlite3_errmsg(connection));
 
 	return politicians;
 }
@@ -222,12 +254,16 @@ const vector<rating> database::get_politician_ratings(const politician_core& p) 
 	vector<rating> ratings;
 
 	int ret = sqlite3_bind_text(stmt.ppStmt, 1, p.name.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind name", function_name, sqlite3_errmsg(connection));
+#endif
 
 	ret = sqlite3_bind_text(stmt.ppStmt, 2, p.party.c_str(), -1, SQLITE_STATIC);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Bind party", function_name, sqlite3_errmsg(connection));
+#endif
 
 	while((ret = sqlite3_step(stmt.ppStmt)) == SQLITE_ROW)
 	{
@@ -240,7 +276,7 @@ const vector<rating> database::get_politician_ratings(const politician_core& p) 
 		ratings.emplace_back(move(name), move(party), move(description), rating, move(date_time));
 	}
 	check_return<db_exception>(
-			ret, SQLITE_DONE, "Step", function_name, sqlite3_errmsg(connection));
+			ret, SQLITE_DONE, "Search", function_name, sqlite3_errmsg(connection));
 
 	return ratings;
 }
@@ -272,7 +308,7 @@ const vector<politician> database::get_all_politicians(const string& order) cons
 		politicians.emplace_back(move(name), move(party), move(info), rating);
 	}
 	check_return<db_exception>(
-			ret, SQLITE_DONE, "Step", function_name, sqlite3_errmsg(connection));
+			ret, SQLITE_DONE, "Search", function_name, sqlite3_errmsg(connection));
 
 	return politicians;
 }
@@ -302,7 +338,7 @@ const vector<politician_core> database::get_politicians_compact(const string& or
 		politicians.emplace_back(move(name), move(party));
 	}
 	check_return<db_exception>(
-			ret, SQLITE_DONE, "Step", function_name, sqlite3_errmsg(connection));
+			ret, SQLITE_DONE, "Search", function_name, sqlite3_errmsg(connection));
 
 	return politicians;
 }
@@ -315,9 +351,11 @@ sqlite_stmt_obj::sqlite_stmt_obj(sqlite3* connection, const char* query,
 		const string& function_name)
 	: function_name(function_name)
 {
-	int ret = sqlite3_prepare_v2(connection, query, -1, &ppStmt, nullptr);
+	[[maybe_unused]] int ret = sqlite3_prepare_v2(connection, query, -1, &ppStmt, nullptr);
+#ifdef DEBUG
 	check_return<db_exception>(
 			ret, SQLITE_OK, "Prepare", function_name, sqlite3_errmsg(connection));
+#endif
 }
 
 sqlite_stmt_obj::~sqlite_stmt_obj()

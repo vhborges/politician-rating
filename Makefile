@@ -33,7 +33,7 @@ $(build_obj_dir)/%.o: $(source_dir)/%.cpp $(dependencies) | $(build_obj_dir)/
 
 ####### DEBUG rules #######
 .PHONY: debug
-debug: flags += -Og -g
+debug: flags += -Og -g -D DEBUG
 debug: $(debug_dir)/$(executable) | $(debug_dir)/
 
 $(debug_dir)/$(executable): $(debug_objects)
