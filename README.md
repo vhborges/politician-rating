@@ -7,6 +7,8 @@ A CLI-based application aiming to satisfy a personal need to register, rate and 
 - [Boost.Locale library](https://www.boost.org/doc/libs/1_72_0/libs/locale/doc/html/index.html)
 ## Run dependencies
 - A Unix-based operating system
+## External libs
+- [CLI11 (Command line parser)](https://github.com/CLIUtils/CLI11)
 ## Building
 Inside the project's root, run:
 ```
